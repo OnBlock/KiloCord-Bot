@@ -1,0 +1,109 @@
+plugins {
+	id 'java'
+	id 'com.github.johnrengelman.shadow' version '5.1.0'
+	id 'fabric-loom' version '0.2.5-SNAPSHOT'
+	id 'maven-publish'
+	id 'com.palantir.git-version' version '0.12.2'
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+version gitVersion()
+def details = versionDetails()
+details.lastTag
+details.commitDistance
+details.gitHash
+details.gitHashFull // full 40-character Git commit hash
+details.branchName // is null if the repository in detached HEAD mode
+details.isCleanTag
+
+archivesBaseName = project.archives_base_name
+version = project.mod_version
+def buildType = details.isCleanTag ? "stable" : "dirty"
+
+def gitVersion = "${version}-${buildType}+git.${details.branchName}-${details.gitHash}"
+group = project.maven_group
+
+minecraft {
+}
+
+shadowJar {
+	classifier = "shadow"
+	configurations = [project.configurations.shadow]
+}
+
+dependencies {
+	//to change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
+	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+
+
+	shadow group: 'com.electronwill.night-config', name: 'yaml', version: "${project.night_config_version}"
+}
+
+tasks.jar.archiveClassifier = "compile"
+
+task remapJar(type: net.fabricmc.loom.task.RemapJarTask, overwrite: true) {
+	from zipTree(shadowJar.archiveFile) dependsOn shadowJar
+}
+
+
+processResources {
+	inputs.property "version", project.gitVersion
+
+	from(sourceSets.main.resources.srcDirs) {
+		include "fabric.mod.json", "mod.properties"
+		expand "version": gitVersion, "version_int": project.mod_version, "fabric_loader_version": project.loader_version,
+				"fabric_yarn_mappings": project.yarn_mappings, "mc_version": project.minecraft_version,
+				"git_hash": details.gitHash, "git_hash_full": details.gitHashFull, "git_branch": details.branchName, "build_type": buildType
+	}
+
+	from(sourceSets.main.resources.srcDirs) {
+		exclude "fabric.mod.json", "mod.properties"
+	}
+}
+
+// ensure that the encoding is set to UTF-8, no matter what the system default is
+// this fixes some edge cases with special characters not displaying correctly
+// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+}
+
+// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+// if it is present.
+// If you remove this task, sources will not be generated.
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = "sources"
+	from sourceSets.main.allSource
+}
+
+jar {
+	from "LICENSE"
+}
+
+// configure the maven publication
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			// add all the jars that should be included when publishing to maven
+			artifact(remapJar) {
+				builtBy remapJar
+			}
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
+		}
+	}
+
+	// select the repositories you want to publish to
+	repositories {
+		// uncomment to publish to the local maven
+		// mavenLocal()
+	}
+}
