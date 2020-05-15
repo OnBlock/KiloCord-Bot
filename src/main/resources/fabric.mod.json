@@ -6,10 +6,11 @@
   "name": "Kilo Cord",
   "description": "a Minecraft server discord bot",
   "authors": [
-    "CODY_AI"
+    "ItsIlya",
+    "Hansi132"
   ],
   "contact": {
-    "homepage": "https://onblock.xyz/",
+    "homepage": "https://50kilo.org/",
     "sources": "https://github.com/KiloCraft/KiloCord-Bot"
   },
 
@@ -28,7 +29,5 @@
   "depends": {
     "fabricloader": ">=0.6.3",
     "kiloessentials": ">=1.5.6"
-  },
-  "suggests": {
   }
 }
