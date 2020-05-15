@@ -2,7 +2,7 @@ package org.kilocraft.kilocord;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
-public class envHandler {
+public class EnvHandler {
     private static final Dotenv dotenv = Dotenv.load();
 
     public static String get(String envKey) {

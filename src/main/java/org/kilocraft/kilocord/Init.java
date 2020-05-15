@@ -8,7 +8,6 @@ public class Init implements ModInitializer {
 	public void onInitialize() {
 		System.out.println("Hello Fabric world!");
 
-
 	}
 
 }

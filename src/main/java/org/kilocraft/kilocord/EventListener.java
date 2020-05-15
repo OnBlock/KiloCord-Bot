@@ -1,4 +1,4 @@
-package org.kilocraft.kilocord;
+Spackage org.kilocraft.kilocord;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.duncte123.botcommons.BotCommons;
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
-public class eventListener extends ListenerAdapter {
+public class EventListener extends ListenerAdapter {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
