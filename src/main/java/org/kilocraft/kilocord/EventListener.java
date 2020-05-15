@@ -1,8 +1,5 @@
-Spackage org.kilocraft.kilocord;
+package org.kilocraft.kilocord;
 
-import com.mojang.brigadier.CommandDispatcher;
-import me.duncte123.botcommons.BotCommons;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -11,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
 
 public class EventListener extends ListenerAdapter {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -28,12 +24,12 @@ public class EventListener extends ListenerAdapter {
         //User is the command sender.
         User user = event.getAuthor();
 
-        String prefix = envHandler.get("prefix");
-        if(event.getJDA().getSelfUser().getAsTag().equals("KiloCord-dev#3795")){
-            prefix = envHandler.get("devPrefix");
+        String prefix = EnvHandler.get("prefix");
+        if (event.getJDA().getSelfUser().getAsTag().equals("KiloCord-dev#3795")) {
+            prefix = EnvHandler.get("devPrefix");
         }
 
-        if(event.getMessage().getContentRaw().startsWith(prefix)){
+        if (event.getMessage().getContentRaw().startsWith(prefix)) {
 
         }
 

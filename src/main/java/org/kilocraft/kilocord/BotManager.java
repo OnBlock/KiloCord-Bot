@@ -11,7 +11,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class BotManager {
-
     public static void main(String[] args) throws LoginException{
         new BotManager();
     }
@@ -20,19 +19,19 @@ public class BotManager {
         final Logger logger = LoggerFactory.getLogger(BotManager.class);
 
         try {
-            String ipAdress = InetAddress.getLocalHost().getHostAddress();
+            String ipAddress = InetAddress.getLocalHost().getHostAddress();
 
             String token = "token";
             String info = "Started production bot";
 
-            if (ipAdress.equals(EnvHandler.get("devIp"))) {
+            if (ipAddress.equals(EnvHandler.get("devIp"))) {
                 token = "devToken";
                 info = "Started developer bot";
             }
 
             DefaultShardManagerBuilder
                     .create(EnvHandler.get(token), GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
-                    .addEventListeners(new eventListener())
+                    .addEventListeners(new EventListener())
                     .setActivity(Activity.playing("20w20b"))
                     .build();
             logger.info(info);
